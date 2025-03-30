@@ -55,8 +55,8 @@ class FavoriteService {
      * @param string $ownerId
      * @param Model $model
      */
-    public function removeFromFavorites(string $ownerId, Model $model): void {
-        Favorite::forOwner($ownerId)->forModel($model)->delete();
+    public function removeFromFavorites(string $ownerId, Model $model): bool {
+        return Favorite::forOwner($ownerId)->forModel($model)->delete();
     }
 
     /**
@@ -67,7 +67,7 @@ class FavoriteService {
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException если запись не найдена
      */
-    public function moveToFolder(string $favoriteId, ?string $folderId): void {
+    public function moveToFolder(string $favoriteId, ?string $folderId): bool {
         $favorite = Favorite::findOrFail($favoriteId);
 
         if ($folderId) {
@@ -75,8 +75,14 @@ class FavoriteService {
             $folderId = $folder->id;
         }
 
-        $favorite->update([
+        return $favorite->update([
             'favorite_folder_id' => $folderId
         ]);
+    }
+
+    public function getFavorites(string $ownerId, ?string $folderName = null) {
+        Favorite::forOwner($ownerId)->when($folderName, function ($query, $folderName) use ($ownerId) {
+            return $query->inFolder($folderName, $ownerId);
+        })->get();
     }
 }

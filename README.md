@@ -1,6 +1,6 @@
 # Laravel Favorites
-[![Latest Stable Version](https://img.shields.io/packagist/v/alyakin/favorites.svg?style=flat-square)](https://packagist.org/packages/alyakin/favorites)
-[![Latest Unstable Version](https://img.shields.io/packagist/vpre/alyakin/favorites.svg?style=flat-square)](https://packagist.org/packages/alyakin/favorites)
+[![Latest Stable Version](https://img.shields.io/packagist/v/alyakin/favorites.svg?style=flat-square&label=stable)](https://packagist.org/packages/alyakin/favorites)
+[![Latest Unstable Version](https://img.shields.io/packagist/vpre/alyakin/favorites.svg?style=flat-square&label=release)](https://packagist.org/packages/alyakin/favorites)
 [![Total Downloads](https://img.shields.io/packagist/dt/alyakin/favorites.svg?style=flat-square)](https://packagist.org/packages/alyakin/favorites)
 [![Laravel Version](https://img.shields.io/badge/laravel-8+-orange.svg?style=flat-square)](https://laravel.com)
 [![PHP Version](https://img.shields.io/badge/php-8.1+-blue.svg?style=flat-square)](https://php.net)

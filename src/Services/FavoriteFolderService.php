@@ -31,17 +31,19 @@ class FavoriteFolderService {
      * Переименовать папку. Имя должно быть уникальным для пользователя.
      *
      * @param string $ownerId
-     * @param string $folderId
+     * @param FavoriteFolder|string $folder
      * @param string $newName
      *
      * @throws ValidationException если имя уже занято
      */
-    public function updateFolderName(string $ownerId, string $folderId, string $newName): void {
-        $folder = FavoriteFolder::forOwner($ownerId)->findOrFail($folderId);
+    public function updateFolderName(string $ownerId, FavoriteFolder | string $folder, string $newName): FavoriteFolder {
+        $folder = \is_string($folder)
+            ? FavoriteFolder::forOwner($ownerId)->findOrFail($folder)
+            : $folder;
 
         $duplicate = FavoriteFolder::forOwner($ownerId)
             ->where('name', $newName)
-            ->where('id', '!=', $folderId)
+            ->where('id', '!=', $folder->id)
             ->exists();
 
         if ($duplicate) {
@@ -52,20 +54,27 @@ class FavoriteFolderService {
 
         $folder->name = $newName;
         $folder->save();
+        return $folder;
     }
 
     /**
      * Удалить папку и убрать ссылки на нее из избранного.
      *
      * @param string $ownerId
-     * @param string $folderId
+     * @param FavoriteFolder|string $folder
      */
-    public function deleteFolder(string $ownerId, string $folderId): void {
-        DB::transaction(function () use ($ownerId, $folderId) {
-            $folder = FavoriteFolder::forOwner($ownerId)->findOrFail($folderId);
+    public function deleteFolder(string $ownerId, FavoriteFolder | string $folder): bool {
+        $result = DB::transaction(function () use ($ownerId, $folder) {
+            $folder = \is_string($folder)
+                ? FavoriteFolder::forOwner($ownerId)->findOrFail($folder)
+                : $folder;
+
             $folder->favorites()->delete();
             $folder->delete();
+            return true;
         });
+
+        return (bool) $result;
     }
 
     /**
